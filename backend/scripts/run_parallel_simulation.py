@@ -1,44 +1,44 @@
 """
-OASIS 双平台并行模拟预设脚本
-同时运行Twitter和Reddit模拟，读取相同的配置文件
+OASIS dual-platform parallel simulation preset script
+Runs Twitter and Reddit simulations simultaneously, reading the same configuration file
 
-功能特性:
-- 双平台（Twitter + Reddit）并行模拟
-- 完成模拟后不立即关闭环境，进入等待命令模式
-- 支持通过IPC接收Interview命令
-- 支持单个Agent采访和批量采访
-- 支持远程关闭环境命令
+Features:
+- Dual-platform (Twitter + Reddit) parallel simulation
+- After finishing simulation, it waits for commands instead of closing the environment immediately
+- Supports receiving Interview commands via IPC
+- Supports single Agent interview and batch interview
+- Supports remote environment closing command
 
-使用方式:
+Usage:
     python run_parallel_simulation.py --config simulation_config.json
-    python run_parallel_simulation.py --config simulation_config.json --no-wait  # 完成后立即关闭
+    python run_parallel_simulation.py --config simulation_config.json --no-wait  # Close immediately after finishing
     python run_parallel_simulation.py --config simulation_config.json --twitter-only
     python run_parallel_simulation.py --config simulation_config.json --reddit-only
 
-日志结构:
+Log structure:
     sim_xxx/
     ├── twitter/
-    │   └── actions.jsonl    # Twitter 平台动作日志
+    │   └── actions.jsonl    # Twitter platform action log
     ├── reddit/
-    │   └── actions.jsonl    # Reddit 平台动作日志
-    ├── simulation.log       # 主模拟进程日志
-    └── run_state.json       # 运行状态（API 查询用）
+    │   └── actions.jsonl    # Reddit platform action log
+    ├── simulation.log       # Main simulation process log
+    └── run_state.json       # Running state (for API query)
 """
 
 # ============================================================
-# 解决 Windows 编码问题：在所有 import 之前设置 UTF-8 编码
-# 这是为了修复 OASIS 第三方库读取文件时未指定编码的问题
+# Resolve Windows encoding issue: set UTF-8 encoding before all imports
+# This is to fix the issue where OASIS third-party library reads files without specifying encoding
 # ============================================================
 import sys
 import os
 
 if sys.platform == 'win32':
-    # 设置 Python 默认 I/O 编码为 UTF-8
-    # 这会影响所有未指定编码的 open() 调用
+    # Set Python default I/O encoding to UTF-8
+    # This affects all open() calls that do not specify an encoding
     os.environ.setdefault('PYTHONUTF8', '1')
     os.environ.setdefault('PYTHONIOENCODING', 'utf-8')
     
-    # 重新配置标准输出流为 UTF-8（解决控制台中文乱码）
+    # Reconfigure standard output stream to UTF-8 (resolve Chinese garbled characters in console)
     if hasattr(sys.stdout, 'reconfigure'):
         sys.stdout.reconfigure(encoding='utf-8', errors='replace')
     if hasattr(sys.stderr, 'reconfigure'):
@@ -53,10 +53,10 @@ if sys.platform == 'win32':
     def _utf8_open(file, mode='r', buffering=-1, encoding=None, errors=None, 
                    newline=None, closefd=True, opener=None):
         """
-        包装 open() 函数，对于文本模式默认使用 UTF-8 编码
-        这可以修复第三方库（如 OASIS）读取文件时未指定编码的问题
+        Wrap open() function, use UTF-8 as default for text mode
+        This fixes the issue where third-party libraries (like OASIS) read files without specifying encoding
         """
-        # 只对文本模式（非二进制）且未指定编码的情况设置默认编码
+        # Set default encoding only for text mode (non-binary) where no encoding is specified
         if encoding is None and 'b' not in mode:
             encoding = 'utf-8'
         return _original_open(file, mode, buffering, encoding, errors, 
@@ -94,13 +94,13 @@ from dotenv import load_dotenv
 _env_file = os.path.join(_project_root, '.env')
 if os.path.exists(_env_file):
     load_dotenv(_env_file)
-    print(f"已加载环境配置: {_env_file}")
+    print(f"Loaded environment config: {_env_file}")
 else:
-    # 尝试加载 backend/.env
+    # Try loading backend/.env
     _backend_env = os.path.join(_backend_dir, '.env')
     if os.path.exists(_backend_env):
         load_dotenv(_backend_env)
-        print(f"已加载环境配置: {_backend_env}")
+        print(f"Loaded environment config: {_backend_env}")
 
 
 class MaxTokensWarningFilter(logging.Filter):

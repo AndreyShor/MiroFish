@@ -403,7 +403,7 @@ def download_report(report_id: str):
         if not report:
             return jsonify({
                 "success": False,
-                "error": f"报告不存在: {report_id}"
+                "error": f"Report does not exist: {report_id}"
             }), 404
         
         md_path = ReportManager._get_report_markdown_path(report_id)

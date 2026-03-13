@@ -83,7 +83,7 @@ class AgentActivityConfig:
 class TimeSimulationConfig:
     """Time simulation configuration (based on Chinese routine habits)"""
     # Total simulation duration (simulation hours)
-    total_simulation_hours: int = 72  # 默认模拟72小时（3天）
+    total_simulation_hours: int = 72  # Default simulation 72 hours (3 days)
     
     # Time represented per round (simulation minutes) - Default 60 minutes (1 hour), speeds up time flow
     minutes_per_round: int = 60
@@ -357,7 +357,7 @@ class SimulationConfigGenerator:
                 echo_chamber_strength=0.6
             )
         
-        # 构建最终参数
+        # Build final parameters
         params = SimulationParameters(
             simulation_id=simulation_id,
             project_id=project_id,
@@ -395,7 +395,7 @@ class SimulationConfigGenerator:
         ]
         
         current_length = sum(len(p) for p in context_parts)
-        remaining_length = self.MAX_CONTEXT_LENGTH - current_length - 500  # 留500字符余量
+        remaining_length = self.MAX_CONTEXT_LENGTH - current_length - 500  # Leave 500 characters margin
         
         if remaining_length > 0 and document_text:
             doc_text = document_text[:remaining_length]
@@ -735,7 +735,7 @@ Return JSON format (no markdown):
         if not event_config.initial_posts:
             return event_config
         
-        # 按实体类型建立 agent 索引
+        # Build agent index by entity type
         agents_by_type: Dict[str, List[AgentActivityConfig]] = {}
         for agent in agent_configs:
             etype = agent.entity_type.lower()
@@ -743,7 +743,7 @@ Return JSON format (no markdown):
                 agents_by_type[etype] = []
             agents_by_type[etype].append(agent)
         
-        # 类型映射表（处理 LLM 可能输出的不同格式）
+        # Type mapping table (handles different formats LLM might output)
         type_aliases = {
             "official": ["official", "university", "governmentagency", "government"],
             "university": ["university", "official"],
@@ -755,7 +755,7 @@ Return JSON format (no markdown):
             "person": ["person", "student", "alumni"],
         }
         
-        # 记录每种类型已使用的 agent 索引，避免重复使用同一个 agent
+        # Record used agent indices per type to avoid reuse
         used_indices: Dict[str, int] = {}
         
         updated_posts = []
@@ -763,17 +763,17 @@ Return JSON format (no markdown):
             poster_type = post.get("poster_type", "").lower()
             content = post.get("content", "")
             
-            # 尝试找到匹配的 agent
+            # Try to find a matching agent
             matched_agent_id = None
             
-            # 1. 直接匹配
+            # 1. Direct match
             if poster_type in agents_by_type:
                 agents = agents_by_type[poster_type]
                 idx = used_indices.get(poster_type, 0) % len(agents)
                 matched_agent_id = agents[idx].agent_id
                 used_indices[poster_type] = idx + 1
             else:
-                # 2. 使用别名匹配
+                # 2. Use alias match
                 for alias_key, aliases in type_aliases.items():
                     if poster_type in aliases or alias_key == poster_type:
                         for alias in aliases:
@@ -786,11 +786,11 @@ Return JSON format (no markdown):
                     if matched_agent_id is not None:
                         break
             
-            # 3. 如果仍未找到，使用影响力最高的 agent
+            # 3. If still not found, use highest influence agent
             if matched_agent_id is None:
-                logger.warning(f"未找到类型 '{poster_type}' 的匹配 Agent，使用影响力最高的 Agent")
+                logger.warning(f"Matching Agent for type '{poster_type}' not found, using highest influence Agent")
                 if agent_configs:
-                    # 按影响力排序，选择影响力最高的
+                    # Sort by influence, select the highest
                     sorted_agents = sorted(agent_configs, key=lambda a: a.influence_weight, reverse=True)
                     matched_agent_id = sorted_agents[0].agent_id
                 else:

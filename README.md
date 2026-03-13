@@ -91,6 +91,16 @@ Click the image to watch MiroFish's deep prediction of the lost ending based on 
 4. **Report Generation**: ReportAgent with rich toolset for deep interaction with post-simulation environment
 5. **Deep Interaction**: Chat with any agent in the simulated world & Interact with ReportAgent
 
+## 📚 Documentation
+
+Explore the detailed MiroFish documentation to understand the system architecture, API, and simulation workflows.
+
+- [Technical Overview](./docs/technical_overview.md): High-level architecture and system flow.
+- [API Reference](./docs/api_reference.md): Detailed documentation of the Flask REST API.
+- [Simulation Guide](./docs/simulation_guide.md): Step-by-step guide on the simulation lifecycle.
+- [GraphRAG Guide](./docs/graph_rag_guide.md): Deep dive into the Knowledge Graph and Zep integration.
+- [Development Setup](./docs/development_setup.md): Technical setup guide for developers.
+
 ## 🚀 Quick Start
 
 ### Option 1: Source Code Deployment (Recommended)

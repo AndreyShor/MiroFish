@@ -417,7 +417,7 @@ const renderGraph = () => {
           source_name: nodeName,
           target_name: nodeName,
           selfLoopCount: allSelfLoops.length,
-          selfLoopEdges: allSelfLoops // 存储所有自环边的详细信息
+          selfLoopEdges: allSelfLoops // Store detailed information of all self-loop edges
         }
       })
       return
@@ -434,8 +434,8 @@ const renderGraph = () => {
     // Calculate curvature: spread out for multiple edges, straight for single edge
     let curvature = 0
     if (totalCount > 1) {
-      // 均匀分布曲率，确保明显区分
-      // 曲率范围根据边数量增加，边越多曲率范围越大
+      // Uniformly distribute curvature to ensure clear distinction
+      // The curvature range increases with the number of edges; more edges mean a larger curvature range
       const curvatureRange = Math.min(1.2, 0.6 + totalCount * 0.15)
       curvature = ((currentIndex / (totalCount - 1)) - 0.5) * curvatureRange * 2
       

@@ -376,7 +376,7 @@ const resetAllState = () => {
   stopPolling()  // Stop any existing polling
 }
 
-// 启动模拟
+// Start simulation
 const doStartSimulation = async () => {
   if (!props.simulationId) {
     addLog('Error: Missing simulationId')
@@ -434,7 +434,7 @@ const doStartSimulation = async () => {
   }
 }
 
-// 停止模拟
+// Stop simulation
 const handleStopSimulation = async () => {
   if (!props.simulationId) return
   
@@ -459,7 +459,7 @@ const handleStopSimulation = async () => {
   }
 }
 
-// 轮询状态
+// Poll status
 let statusTimer = null
 let detailTimer = null
 
